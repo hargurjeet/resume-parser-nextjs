@@ -245,7 +245,7 @@ Three small components:
 
 ---
 
-## PHASE 5 — PDF Viewer
+## PHASE 5 — PDF Viewer ✅ COMPLETE
 
 *Goal: PDF renders inline in the browser from a local File object.*
 
@@ -268,7 +268,7 @@ Three small components:
 
 ---
 
-## PHASE 6 — Full Integration
+## PHASE 6 — Full Integration ✅ COMPLETE
 
 *Goal: Complete split-view page wired end-to-end.*
 
