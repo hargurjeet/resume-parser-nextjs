@@ -30,7 +30,6 @@ A PDF resume parsing application. Users upload a PDF resume → text is extracte
 | `app/services/parser.py` | Core logic — `FireworksResumeParser` class |
 | `app/models/resume.py` | Pydantic schema for structured output |
 | `app/core/config.py` | Settings (Fireworks API key, model ID, base URL) via pydantic-settings |
-| `app/utils/pdf.py` | Standalone PDF extraction helper (not wired in — parser has its own method) |
 
 ### Legacy Streamlit Frontend
 | File | Role |
@@ -138,8 +137,6 @@ npm run dev   # http://localhost:3000
 
 ## Known Gaps / Notes
 
-- `app/utils/pdf.py` duplicates PDF extraction logic already inside `FireworksResumeParser` — not wired in
-- `archieve/` contains prototype Jupyter notebooks and legacy stubs (not production code)
 - No tests exist yet
 - CORS is wide open (`allow_origins=["*"]`) — tighten for production
 

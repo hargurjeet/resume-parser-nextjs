@@ -16,3 +16,11 @@ __pycache__/
 
 # Binary files (rejected by Hugging Face Spaces without LFS)
 *.pdf
+
+# Node.js / Next.js
+node_modules/
+.next/
+frontend/.env.local
+npm-debug.log*
+.npm
+out/
