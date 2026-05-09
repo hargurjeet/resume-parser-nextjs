@@ -50,9 +50,9 @@ A PDF resume parsing application. Users upload a PDF resume → text is extracte
 | `frontend/components/ResumeUploader.tsx` | Drag-and-drop upload + API call with progress steps |
 | `frontend/components/resume/` | CandidateHeader, SkillTags, ExperienceTimeline, EducationCards, ProjectGrid, CertificationList, LanguageTags — all complete |
 | `frontend/lib/api.ts` | `parseResume()` fetch wrapper |
-| `frontend/lib/mock.ts` | Sample data for component testing without a real PDF |
+| `frontend/lib/mock.ts` | `MOCK_RESUME` constant — based on Hargurjeet's actual resume; used for Phase 4 component testing |
 | `frontend/lib/utils.ts` | `cn()` helper (tailwind-merge + clsx) |
-| `frontend/types/resume.ts` | TypeScript interfaces mirroring the Pydantic models |
+| `frontend/types/resume.ts` | TypeScript interfaces — superset of Pydantic schema; see note below |
 | `frontend/.env.local` | `NEXT_PUBLIC_API_URL=http://localhost:8000` |
 
 ### Infrastructure
@@ -90,6 +90,32 @@ Key schema decisions:
 - `Project.description` is `Optional[str]` — resumes often list projects by title only
 - `instructor.Mode.JSON` used (not TOOLS) for open-source model compatibility
 - `Settings` uses `extra="ignore"` so stale shell env vars don't crash startup
+
+### TypeScript types vs. Pydantic schema
+
+`frontend/types/resume.ts` is a **superset** of the Pydantic schema — it has extra optional fields the backend may not always return. These are safe (all optional), but the backend won't populate them unless the Pydantic models are updated too:
+
+| Interface | Extra TS-only fields |
+|---|---|
+| `WorkExperience` | `duration?: string` |
+| `Education` | `gpa?: number`, `location?: string` |
+| `Certification` | `expiry_date?: string`, `credential_id?: string` |
+| `Project` | `date?: string` |
+
+## Next.js Implementation Notes
+
+### shadcn config (`frontend/components.json`)
+- Style: `base-nova` (not Default — chose this for the base-ui integration)
+- Base color: `neutral`
+- CSS variables: enabled
+- RSC: true (components support React Server Components)
+- Installed shadcn components: `badge`, `button`, `card`, `separator`, `skeleton`, `tabs`
+
+### api.ts error handling
+`parseResume()` gracefully handles non-JSON error responses with `.catch(() => ({}))` — avoids crashing if the backend returns a plain-text error body. Falls back to `Request failed with status <N>`.
+
+### Tailwind v4 setup
+Uses `@import "tailwindcss"` + `@import "tw-animate-css"` + `@import "shadcn/tailwind.css"` in `globals.css` — no `tailwind.config.js` file (v4 doesn't need one). Dark mode uses `@custom-variant dark (&:is(.dark *))`.
 
 ## Fireworks AI / Credentials
 
@@ -134,7 +160,7 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 uv run streamlit run streamlit_ui/ui.py --server.port 8501
 ```
 
-### Next.js frontend (after `frontend/` is scaffolded)
+### Next.js frontend
 ```bash
 cd frontend
 npm run dev   # http://localhost:3000
