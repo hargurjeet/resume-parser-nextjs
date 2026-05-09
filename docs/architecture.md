@@ -5,7 +5,11 @@
 ```
 User (browser)
     │
-    ├── http://localhost:8501  ──► Streamlit UI (streamlit_ui/ui.py)
+    ├── http://localhost:8501  ──► Streamlit UI (legacy — streamlit_ui/ui.py)
+    │                                   │
+    │                                   │ POST /resume/parse (multipart/form-data)
+    │                                   ▼
+    ├── http://localhost:3000  ──► Next.js UI (frontend/ — in progress)
     │                                   │
     │                                   │ POST /resume/parse (multipart/form-data)
     │                                   ▼
@@ -36,7 +40,7 @@ User (browser)
 
 ## Component Breakdown
 
-### FastAPI Backend (`app/`)
+### FastAPI Backend (`app/`) — unchanged throughout UI migration
 
 ```
 app/
@@ -53,7 +57,7 @@ app/
     └── pdf.py       # Standalone PDF extraction helper (not currently used by parser)
 ```
 
-### Streamlit Frontend (`streamlit_ui/`)
+### Legacy Streamlit Frontend (`streamlit_ui/`)
 
 Single file (`ui.py`). Responsibilities:
 - File uploader widget (PDF only)
@@ -61,14 +65,76 @@ Single file (`ui.py`). Responsibilities:
 - Renders: name, experience, role, location, email, summary, work history, skills, education, certifications
 - Download button for raw JSON
 
-### Docker / Deployment
+**Status**: functional and deployed to HF Spaces. Being replaced by Next.js.
+
+### Next.js Frontend (`frontend/`) — in progress
+
+Split-view layout: PDF viewer on the left (40%), parsed data on the right (60%).
+
+```
+frontend/src/
+├── app/
+│   ├── layout.tsx              # ThemeProvider, metadata
+│   ├── page.tsx                # Main split-view page
+│   └── globals.css
+├── components/
+│   ├── ResumeUploader.tsx      # Drag-and-drop + API call + progress steps
+│   ├── PdfViewer.tsx           # react-pdf inline viewer (page nav)
+│   └── resume/
+│       ├── CandidateHeader.tsx # Name, role badge, location, email, icon links
+│       ├── SkillTags.tsx       # Skills grouped by category with colored pills
+│       ├── ExperienceTimeline.tsx  # Vertical timeline of work history
+│       ├── EducationCards.tsx  # One card per education entry
+│       ├── ProjectGrid.tsx     # 2-column card grid with tech badges
+│       ├── CertificationList.tsx   # Horizontal badge list
+│       └── LanguageTags.tsx    # Language badge list
+├── lib/
+│   ├── api.ts                  # parseResume() fetch wrapper
+│   └── mock.ts                 # Sample data for component testing
+└── types/
+    └── resume.ts               # TypeScript interfaces (mirrors Pydantic models)
+```
+
+**Target UI layout:**
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  Resume Parser                                 [Dark/Light toggle]│
+├──────────────────────────┬───────────────────────────────────────┤
+│  PDF VIEWER (40%)        │  PARSED RESULT (60%)                  │
+│                          │                                        │
+│  [PDF rendered inline,   │  Hargurjeet Singh Ganger              │
+│   scrollable, with       │  Senior Data Scientist · 15 yrs       │
+│   prev/next page nav]    │  Bangalore · email · phone             │
+│                          │  [LinkedIn] [GitHub] [Portfolio]       │
+│                          │                                        │
+│                          │  ── Skills ──────────────────────     │
+│                          │  [Python🔵][ML🔵][FastAPI🟣][AWS🟢]  │
+│                          │                                        │
+│                          │  ── Experience ───────────────────    │
+│                          │  ● BT · Senior Data Scientist          │
+│                          │    May 2022 – Present                  │
+│                          │                                        │
+│                          │  ── Education ────────────────────    │
+│                          │  M.S. ML & AI · Liverpool JMU          │
+│                          │                                        │
+│                          │  ── Projects ─────────────────────    │
+│                          │  [Agentic Search] [Blog Generator]     │
+│                          │                                        │
+│                          │  ── Certifications ───────────────    │
+│                          │  [Azure] [GCP]                         │
+│                          │                                        │
+│                          │  [Download JSON]                       │
+└──────────────────────────┴───────────────────────────────────────┘
+```
+
+### Docker / Current Deployment
 
 Both services run in a single container:
 - `start.sh` launches `uvicorn` (FastAPI) on port 8000, then `streamlit` on port 8501
 - `Dockerfile` uses `python:3.10-slim` with `poppler-utils` for PDF support
 - `.streamlit/config.toml` is copied into the image — required to disable XSRF/CORS for HF Spaces
 
-### Hugging Face Spaces
+### Hugging Face Spaces (current)
 
 Deployed at: https://huggingface.co/spaces/Hargurjeet/Resume_parser
 
@@ -90,6 +156,18 @@ User browser → https://hargurjeet-resume-parser.hf.space
 ```
 
 **HF Spaces 403 fix**: Streamlit's XSRF protection conflicts with HF's reverse proxy. Disabled via `.streamlit/config.toml` AND `--server.enableXsrfProtection false` flag in `start.sh`. The Dockerfile must include `COPY .streamlit ./.streamlit` or the config file is never picked up.
+
+### Planned Deployment (after Next.js is complete)
+
+```
+Next.js frontend  →  Vercel (free tier)
+                      NEXT_PUBLIC_API_URL=<Railway URL>
+
+FastAPI backend   →  Railway (~$5/mo)
+                      Dockerfile — same container, add FIREWORKS_API_KEY
+```
+
+The Dockerfile will eventually need a Node.js build stage added to serve Next.js. Do not modify the Dockerfile until Next.js is fully validated end-to-end locally.
 
 ## How `instructor` Works Here
 
