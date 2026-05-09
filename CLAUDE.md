@@ -12,7 +12,7 @@ A PDF resume parsing application. Users upload a PDF resume → text is extracte
 
 - **Backend**: FastAPI (port 8000) + `uvicorn` — unchanged throughout migration
 - **Frontend (legacy)**: Streamlit (port 8501) — functional, being replaced
-- **Frontend (new)**: Next.js 15 (App Router) in `frontend/` — TypeScript, Tailwind CSS, shadcn/ui, react-pdf, react-dropzone
+- **Frontend (new)**: Next.js 16.2.6 (App Router) in `frontend/` — TypeScript, Tailwind CSS v4, shadcn v4 + @base-ui/react, react-pdf, react-dropzone, React 19
 - **AI**: Fireworks AI, model `accounts/fireworks/models/llama-v3p3-70b-instruct` (Llama 3.3 70B — open-source, ~$0.20/M tokens)
 - **Structured output**: `instructor` library with `Mode.JSON` via OpenAI-compatible Fireworks client
 - **PDF extraction**: `pdfplumber`
@@ -40,16 +40,19 @@ A PDF resume parsing application. Users upload a PDF resume → text is extracte
 | `.streamlit/config.toml` | Disables XSRF + CORS protection — required for file upload on HF Spaces |
 
 ### Next.js Frontend (in progress — see `docs/nextjs-plan.md`)
+
+> Note: scaffolded with `--no-src-dir` — there is no `src/` directory. Paths are directly under `frontend/`.
+
 | File | Role |
 |------|------|
-| `frontend/src/app/page.tsx` | Main split-view page (upload → parse → PDF left / data right) |
-| `frontend/src/app/layout.tsx` | ThemeProvider, metadata |
-| `frontend/src/components/ResumeUploader.tsx` | Drag-and-drop upload + API call with progress steps |
-| `frontend/src/components/PdfViewer.tsx` | Inline PDF viewer (react-pdf, page nav) |
-| `frontend/src/components/resume/` | CandidateHeader, SkillTags, ExperienceTimeline, EducationCards, ProjectGrid, CertificationList, LanguageTags |
-| `frontend/src/lib/api.ts` | `parseResume()` fetch wrapper |
-| `frontend/src/lib/mock.ts` | Sample data for component testing without a real PDF |
-| `frontend/src/types/resume.ts` | TypeScript interfaces mirroring the Pydantic models |
+| `frontend/app/page.tsx` | Currently renders all display components with MOCK_RESUME for Phase 4 testing; will become the full split-view page in Phase 6 |
+| `frontend/app/layout.tsx` | Default scaffold layout (Geist fonts, metadata); ThemeProvider added in Phase 7 |
+| `frontend/components/ResumeUploader.tsx` | Drag-and-drop upload + API call with progress steps |
+| `frontend/components/resume/` | CandidateHeader, SkillTags, ExperienceTimeline, EducationCards, ProjectGrid, CertificationList, LanguageTags — all complete |
+| `frontend/lib/api.ts` | `parseResume()` fetch wrapper |
+| `frontend/lib/mock.ts` | Sample data for component testing without a real PDF |
+| `frontend/lib/utils.ts` | `cn()` helper (tailwind-merge + clsx) |
+| `frontend/types/resume.ts` | TypeScript interfaces mirroring the Pydantic models |
 | `frontend/.env.local` | `NEXT_PUBLIC_API_URL=http://localhost:8000` |
 
 ### Infrastructure

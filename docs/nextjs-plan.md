@@ -80,7 +80,7 @@ Build must complete with 0 errors. TypeScript compilation clean.
 
 ### Step 3 — Define TypeScript types + mock data
 
-Create `src/types/resume.ts`:
+Create `types/resume.ts`:
 ```typescript
 export interface Skill {
   name: string
@@ -113,7 +113,7 @@ export interface ParsedResume {
 }
 ```
 
-Create `src/lib/mock.ts` with sample data for component testing without a real PDF. (See the working mock in the plan file at `.claude/plans/`.)
+Create `lib/mock.ts` with sample data for component testing without a real PDF. (See the working mock in the plan file at `.claude/plans/`.)
 
 **Validate:**
 ```bash
@@ -129,7 +129,7 @@ npm run build
 
 ### Step 4 — API client
 
-Create `src/lib/api.ts`:
+Create `lib/api.ts`:
 ```typescript
 import { ParsedResume } from '@/types/resume'
 
@@ -167,12 +167,12 @@ Expect a 400 error (PDF too short) — confirms CORS is open and the endpoint is
 
 ### Step 5 — ResumeUploader component
 
-Create `src/components/ResumeUploader.tsx`:
+Create `components/ResumeUploader.tsx`:
 - Drag-and-drop zone via `react-dropzone` (PDF only)
 - Shows selected filename + file size
 - "Parse Resume" button with loading spinner
 - Progress text: "Extracting text…" → "Sending to AI…" → "Validating…"
-- Calls `parseResume()` from `src/lib/api.ts`
+- Calls `parseResume()` from `lib/api.ts`
 - On success: calls `onSuccess(resume, file)` callback
 - On error: shows error message inline
 
@@ -190,7 +190,7 @@ Create `src/components/ResumeUploader.tsx`:
 
 ### Step 6 — CandidateHeader
 
-`src/components/resume/CandidateHeader.tsx`:
+`components/resume/CandidateHeader.tsx`:
 - Large name heading, current role + years-of-experience badge
 - Location, email, phone on one line
 - Icon links for LinkedIn, GitHub, Portfolio (lucide icons, new tab)
@@ -201,7 +201,7 @@ Create `src/components/ResumeUploader.tsx`:
 
 ### Step 7 — SkillTags
 
-`src/components/resume/SkillTags.tsx`:
+`components/resume/SkillTags.tsx`:
 - Groups skills by category with category heading above each group
 - Colored pills: technical→blue, framework→purple, tool→green, soft→orange, language/other→gray
 
@@ -211,7 +211,7 @@ Create `src/components/ResumeUploader.tsx`:
 
 ### Step 8 — ExperienceTimeline
 
-`src/components/resume/ExperienceTimeline.tsx`:
+`components/resume/ExperienceTimeline.tsx`:
 - Vertical timeline with dot/line on the left
 - Each entry: job title (bold), company, date range, location
 - Bullet list of responsibilities
@@ -222,7 +222,7 @@ Create `src/components/ResumeUploader.tsx`:
 
 ### Step 9 — EducationCards
 
-`src/components/resume/EducationCards.tsx`:
+`components/resume/EducationCards.tsx`:
 - One card per education entry
 - Degree, institution, field of study, graduation year
 - Graduation cap icon (lucide)
@@ -235,11 +235,11 @@ Create `src/components/ResumeUploader.tsx`:
 
 Three small components:
 
-**`src/components/resume/ProjectGrid.tsx`** — 2-column card grid; title, description, tech badges, optional link icon
+**`components/resume/ProjectGrid.tsx`** — 2-column card grid; title, description, tech badges, optional link icon
 
-**`src/components/resume/CertificationList.tsx`** — horizontal badge list; cert name + issuer
+**`components/resume/CertificationList.tsx`** — horizontal badge list; cert name + issuer
 
-**`src/components/resume/LanguageTags.tsx`** — simple badge list of language strings
+**`components/resume/LanguageTags.tsx`** — simple badge list of language strings
 
 **Validate:** All three render correctly with mock data. Projects are a 2-column grid.
 
@@ -251,7 +251,7 @@ Three small components:
 
 ### Step 11 — PdfViewer component
 
-`src/components/PdfViewer.tsx`:
+`components/PdfViewer.tsx`:
 - Accepts `file: File` prop
 - Uses `react-pdf` to render pages
 - Configure worker (required):
@@ -274,7 +274,7 @@ Three small components:
 
 ### Step 12 — Main page (split-view layout)
 
-Rewrite `src/app/page.tsx`:
+Rewrite `app/page.tsx`:
 
 **Before upload:** centered `ResumeUploader` with app title and tagline.
 
@@ -299,7 +299,7 @@ Rewrite `src/app/page.tsx`:
 
 ### Step 13 — Theme + polish
 
-- Add `ThemeProvider` from shadcn to `src/app/layout.tsx`
+- Add `ThemeProvider` from shadcn to `app/layout.tsx`
 - Add dark/light toggle button in navbar (top right)
 - Add `Skeleton` loading placeholders in right panel while parsing
 - Responsive: on mobile (<768px), stack PDF viewer above parsed result
@@ -383,6 +383,6 @@ frontend/
 ## Key Principles
 
 - Each phase is independently testable — never need Phase N+1 to validate Phase N
-- Mock data (`src/lib/mock.ts`) lets you build all display components without a real PDF or backend
+- Mock data (`lib/mock.ts`) lets you build all display components without a real PDF or backend
 - The backend is untouched — Streamlit UI can keep running in parallel while building Next.js
 - HF Spaces Dockerfile update (Node build stage) is a separate task — do not touch until Next.js is validated end-to-end locally

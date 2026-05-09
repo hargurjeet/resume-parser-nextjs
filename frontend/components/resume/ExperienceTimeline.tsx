@@ -14,9 +14,9 @@ export default function ExperienceTimeline({ experience }: Props) {
         <div key={i} className="flex gap-4">
           {/* Timeline spine */}
           <div className="flex flex-col items-center">
-            <div className="mt-1 size-2.5 rounded-full bg-primary shrink-0" />
+            <div className="mt-1 size-2.5 rounded-full bg-primary ring-4 ring-primary/20 shrink-0" />
             {i < experience.length - 1 && (
-              <div className="mt-1 w-px flex-1 bg-border" />
+              <div className="mt-1 w-px flex-1 bg-gradient-to-b from-primary/30 to-transparent" />
             )}
           </div>
 
