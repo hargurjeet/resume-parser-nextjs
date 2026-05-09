@@ -1,426 +1,225 @@
 ---
 title: Resume Parser
-emoji: 🚀
-colorFrom: red
-colorTo: red
+emoji: 📄
+colorFrom: blue
+colorTo: indigo
 sdk: docker
 app_port: 8501
 tags:
-  - streamlit
+  - resume
+  - nlp
+  - llm
+  - fastapi
+  - nextjs
 pinned: false
-short_description: Streamlit template space
+short_description: AI-powered PDF resume parser with Next.js UI
 license: mit
 ---
 
 # Resume Parser
 
-An intelligent resume parsing system powered by AWS Bedrock Claude and structured output validation. Extract structured candidate information from PDF resumes with high accuracy using AI.
+An AI-powered PDF resume parsing application. Upload a PDF → text is extracted → **Llama 3.3 70B** on Fireworks AI parses it into structured JSON → results are displayed in a polished split-view UI showing the original PDF alongside the parsed data.
 
-## Features
-
-- **AI-Powered Parsing**: Uses AWS Bedrock Claude with tool-based structured output
-- **Pydantic Validation**: Ensures data quality and schema compliance
-- **FastAPI Backend**: RESTful API for resume parsing
-- **Streamlit UI**: Interactive web interface for easy resume uploads
-- **Docker Support**: Containerized deployment for consistency
-- **Structured Output**: Extracts contact info, experience, skills, education, and certifications
-
-## Architecture
-
-```
-resume-parser/
-├── app/
-│   ├── api/          # FastAPI routes
-│   ├── core/         # Configuration
-│   ├── models/       # Pydantic models
-│   ├── services/     # Business logic (parser)
-│   └── utils/        # Utilities
-├── streamlit_ui/     # Streamlit interface
-├── Dockerfile        # Container configuration
-└── requirements.txt  # Python dependencies
-```
-
-## Prerequisites
-
-- Python 3.10+
-- AWS Account with Bedrock access
-- AWS credentials configured
-- Docker (optional, for containerized deployment)
-
-## Installation
-
-### Local Setup
-
-1. **Clone the repository**
-```bash
-git clone <repository-url>
-cd resume-parser
-```
-
-2. **Create virtual environment**
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. **Install dependencies**
-```bash
-pip install -r requirements.txt
-```
-
-4. **Configure environment variables**
-
-Create a `.env` file in the project root:
-```env
-AWS_REGION=us-east-1
-BEDROCK_MODEL_ID=anthropic.claude-3-5-sonnet-20241022-v2:0
-AWS_ACCESS_KEY_ID=your_access_key
-AWS_SECRET_ACCESS_KEY=your_secret_key
-```
-
-### Docker Setup
-
-1. **Build the image**
-```bash
-docker build -t resume-parser .
-```
-
-2. **Run the container**
-```bash
-docker run -p 8000:8000 -p 8501:8501 \
-  -e AWS_REGION=us-east-1 \
-  -e AWS_ACCESS_KEY_ID=your_key \
-  -e AWS_SECRET_ACCESS_KEY=your_secret \
-  resume-parser
-```
-
-## Usage
-
-### Starting the Services
-
-**Option 1: Using the start script**
-```bash
-bash start.sh
-```
-
-**Option 2: Manual start**
-
-Terminal 1 - FastAPI Backend:
-```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
-```
-
-Terminal 2 - Streamlit UI:
-```bash
-streamlit run streamlit_ui/ui.py --server.port 8501
-```
-
-### API Endpoints
-
-#### Parse Resume
-```bash
-POST /resume/parse
-Content-Type: multipart/form-data
-
-curl -X POST "http://localhost:8000/resume/parse" \
-  -F "file=@resume.pdf"
-```
-
-**Response:**
-```json
-{
-  "full_name": "John Doe",
-  "email": "john.doe@example.com",
-  "phone": "+1-234-567-8900",
-  "location": "San Francisco, CA",
-  "current_job_title": "Senior Software Engineer",
-  "years_of_experience": 8,
-  "summary": "Experienced software engineer...",
-  "work_experience": [
-    {
-      "job_title": "Senior Software Engineer",
-      "company": "Tech Corp",
-      "location": "San Francisco, CA",
-      "start_date": "2020-01",
-      "end_date": "Present",
-      "responsibilities": [
-        "Led development of microservices architecture",
-        "Mentored junior developers"
-      ]
-    }
-  ],
-  "skills": [
-    {"name": "Python", "proficiency": "Expert"},
-    {"name": "AWS", "proficiency": "Advanced"}
-  ],
-  "education": [
-    {
-      "degree": "Bachelor of Science in Computer Science",
-      "institution": "University of California",
-      "graduation_year": "2015"
-    }
-  ],
-  "certifications": [
-    {
-      "name": "AWS Certified Solutions Architect",
-      "issuing_organization": "Amazon Web Services",
-      "issue_date": "2021-06"
-    }
-  ]
-}
-```
-
-#### Health Check
-```bash
-GET /
-```
-
-### Web Interface
-
-1. Open browser to `http://localhost:8501`
-2. Upload a PDF resume
-3. Click "Parse Resume"
-4. View structured results
-5. Download JSON output
-
-## Technology Stack
-
-### Backend
-- **FastAPI**: Modern web framework for building APIs
-- **Pydantic**: Data validation using Python type annotations
-- **Instructor**: Structured outputs from LLMs
-- **Boto3**: AWS SDK for Python
-- **PDFPlumber**: PDF text extraction
-
-### AI/ML
-- **AWS Bedrock**: Managed AI service
-- **Claude 3.5 Sonnet**: Advanced language model
-- **Tool-based extraction**: Structured output generation
-
-### Frontend
-- **Streamlit**: Interactive web applications
-- **Python**: Full-stack Python development
-
-### DevOps
-- **Docker**: Containerization
-- **Uvicorn**: ASGI server
-- **Pre-commit**: Code quality hooks
-
-## Configuration
-
-### AWS Bedrock Setup
-
-1. **Enable Bedrock in AWS Console**
-   - Navigate to AWS Bedrock
-   - Request model access for Claude 3.5 Sonnet
-   - Wait for approval (usually instant)
-
-2. **IAM Permissions**
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "bedrock:InvokeModel",
-        "bedrock:InvokeModelWithResponseStream"
-      ],
-      "Resource": "arn:aws:bedrock:*::foundation-model/anthropic.claude-*"
-    }
-  ]
-}
-```
-
-### Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `AWS_REGION` | AWS region for Bedrock | `us-east-1` |
-| `BEDROCK_MODEL_ID` | Claude model identifier | `anthropic.claude-3-5-sonnet-20241022-v2:0` |
-| `AWS_ACCESS_KEY_ID` | AWS access key | Required |
-| `AWS_SECRET_ACCESS_KEY` | AWS secret key | Required |
-
-## Data Models
-
-### ParsedResume Schema
-
-```python
-class ParsedResume(BaseModel):
-    full_name: str
-    email: Optional[str]
-    phone: Optional[str]
-    location: Optional[str]
-    current_job_title: Optional[str]
-    years_of_experience: Optional[int]
-    summary: Optional[str]
-    work_experience: List[WorkExperience]
-    skills: List[Skill]
-    education: List[Education]
-    certifications: Optional[List[Certification]]
-```
-
-See `app/models/resume.py` for complete schema definitions.
-
-## Development
-
-### Running Tests
-
-```bash
-# Install dev dependencies
-pip install pytest pytest-cov
-
-# Run tests
-pytest
-
-# With coverage
-pytest --cov=app tests/
-```
-
-### Code Quality
-
-```bash
-# Install pre-commit hooks
-pre-commit install
-
-# Run manually
-pre-commit run --all-files
-```
-
-### Project Structure
-
-```
-app/
-├── api/
-│   └── routes.py          # API endpoints
-├── core/
-│   └── config.py          # Settings management
-├── models/
-│   └── resume.py          # Pydantic models
-├── services/
-│   └── parser.py          # Resume parsing logic
-├── utils/
-│   └── pdf.py             # PDF utilities
-└── main.py                # FastAPI application
-
-streamlit_ui/
-└── ui.py                  # Streamlit interface
-
-tests/
-└── test_parser.py         # Unit tests
-```
-
-## Deployment
-
-### Production Considerations
-
-1. **Security**
-   - Use AWS IAM roles instead of access keys
-   - Enable HTTPS/TLS
-   - Implement rate limiting
-   - Add authentication/authorization
-
-2. **Scalability**
-   - Deploy behind load balancer
-   - Use container orchestration (ECS, EKS)
-   - Implement caching
-   - Add monitoring and logging
-
-3. **Cost Optimization**
-   - Monitor Bedrock usage
-   - Implement request batching
-   - Use appropriate instance sizes
-
-### AWS Deployment Example
-
-```bash
-# Build and push to ECR
-aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <account>.dkr.ecr.us-east-1.amazonaws.com
-docker build -t resume-parser .
-docker tag resume-parser:latest <account>.dkr.ecr.us-east-1.amazonaws.com/resume-parser:latest
-docker push <account>.dkr.ecr.us-east-1.amazonaws.com/resume-parser:latest
-
-# Deploy to ECS/Fargate
-aws ecs update-service --cluster resume-parser --service resume-parser-service --force-new-deployment
-```
-
-## Troubleshooting
-
-### Common Issues
-
-**1. AWS Credentials Error**
-```
-Error: Unable to locate credentials
-```
-Solution: Ensure AWS credentials are configured via environment variables or AWS CLI.
-
-**2. Bedrock Access Denied**
-```
-Error: AccessDeniedException
-```
-Solution: Request model access in AWS Bedrock console and verify IAM permissions.
-
-**3. PDF Extraction Fails**
-```
-Error: PDF extraction failed
-```
-Solution: Ensure PDF is not encrypted or corrupted. Check poppler-utils installation.
-
-**4. Port Already in Use**
-```
-Error: Address already in use
-```
-Solution: Change ports in configuration or kill existing processes.
-
-## Performance
-
-- **Average parsing time**: 3-8 seconds per resume
-- **Accuracy**: ~95% for well-formatted resumes
-- **Supported formats**: PDF only
-- **Max file size**: 10MB (configurable)
-
-## Limitations
-
-- PDF format only (no Word documents)
-- English language resumes (primary support)
-- Requires AWS Bedrock access
-- Internet connection required
-
-## Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- AWS Bedrock for AI capabilities
-- Anthropic Claude for language understanding
-- Instructor library for structured outputs
-- FastAPI and Streamlit communities
-
-## Support
-
-For issues, questions, or contributions:
-- Open an issue on GitHub
-- Contact: [your-email@example.com]
-
-## Roadmap
-
-- [ ] Support for Word documents (.docx)
-- [ ] Multi-language support
-- [ ] Batch processing
-- [ ] Resume comparison features
-- [ ] ATS scoring
-- [ ] Export to multiple formats
-- [ ] Integration with HR systems
+**Live demo**: [Hugging Face Spaces](https://huggingface.co/spaces/Hargurjeet/Resume_parser) (Streamlit UI)
 
 ---
 
-**Built with ❤️ using AWS Bedrock and Python**
+## What it does
+
+- Drag-and-drop a PDF resume
+- Animated progress steps while the AI processes it
+- Split view: original PDF on the left, structured data on the right
+- Color-coded skill tags (technical, frameworks, tools, soft skills)
+- Experience timeline, education cards, project cards, certifications
+- Download the parsed result as JSON
+- Dark / light mode toggle
+
+---
+
+## Tech Stack
+
+### Backend
+| | |
+|---|---|
+| **Framework** | FastAPI + uvicorn |
+| **AI** | Fireworks AI — Llama 3.3 70B Instruct (`accounts/fireworks/models/llama-v3p3-70b-instruct`) |
+| **Structured output** | `instructor` library with `Mode.JSON` |
+| **PDF extraction** | `pdfplumber` |
+| **Validation** | Pydantic v2 |
+| **Package manager** | `uv` |
+
+### Frontend
+| | |
+|---|---|
+| **Framework** | Next.js 16 (App Router, TypeScript) |
+| **Styling** | Tailwind CSS v4 + shadcn/ui |
+| **PDF viewer** | react-pdf + pdfjs-dist |
+| **File upload** | react-dropzone |
+| **Design** | Apple-inspired (SF Pro font, #007AFF blue, dark mode) |
+
+---
+
+## Project Structure
+
+```
+resume-parser-nextjs/
+├── app/                        # FastAPI backend
+│   ├── main.py                 # App entry point, CORS config
+│   ├── api/routes.py           # POST /resume/parse endpoint
+│   ├── services/parser.py      # FireworksResumeParser — all AI logic
+│   ├── models/resume.py        # Pydantic schema (ParsedResume)
+│   └── core/config.py          # Settings via pydantic-settings
+├── streamlit_ui/ui.py          # Legacy Streamlit frontend (HF Spaces)
+├── frontend/                   # Next.js frontend (new)
+│   ├── app/
+│   │   ├── layout.tsx          # ThemeProvider, SF Pro font, metadata
+│   │   ├── page.tsx            # Main split-view page
+│   │   └── globals.css         # Apple color tokens, dark mode
+│   ├── components/
+│   │   ├── ResumeUploader.tsx  # Drag-and-drop + progress steps
+│   │   ├── PdfViewer.tsx       # Inline PDF renderer, page nav
+│   │   ├── ThemeProvider.tsx   # next-themes wrapper
+│   │   └── resume/             # CandidateHeader, SkillTags, ExperienceTimeline,
+│   │                           # EducationCards, ProjectGrid, CertificationList,
+│   │                           # LanguageTags
+│   ├── lib/
+│   │   ├── api.ts              # parseResume() fetch wrapper
+│   │   └── mock.ts             # Sample data for development
+│   └── types/resume.ts         # TypeScript interfaces (mirrors Pydantic models)
+├── docs/                       # Deep-dive documentation
+│   ├── architecture.md
+│   ├── api.md
+│   ├── data-models.md
+│   ├── setup.md
+│   └── nextjs-plan.md          # Full 8-phase Next.js migration plan
+├── Dockerfile                  # Python 3.10-slim, runs both services
+├── start.sh                    # Starts uvicorn + streamlit
+├── pyproject.toml              # Python deps managed by uv
+└── .github/workflows/          # Auto-sync to HF Spaces on push to main
+```
+
+---
+
+## Running Locally
+
+### 1. Backend (required for all frontend work)
+
+```bash
+# Install Python dependencies
+uv sync
+
+# Create .env file (never committed)
+echo "FIREWORKS_API_KEY=your_key_here" > .env
+
+# Start FastAPI on port 8000
+uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+FastAPI docs available at `http://localhost:8000/docs`.
+
+### 2. Next.js frontend
+
+```bash
+cd frontend
+npm install
+npm run dev   # http://localhost:3000
+```
+
+### 3. Legacy Streamlit frontend (optional)
+
+```bash
+uv run streamlit run streamlit_ui/ui.py --server.port 8501
+```
+
+### Docker (both services in one container)
+
+```bash
+docker build -t resume-parser .
+docker run -p 8000:8000 -p 8501:8501 \
+  -e FIREWORKS_API_KEY=your_key_here \
+  resume-parser
+```
+
+---
+
+## API
+
+### `POST /resume/parse`
+
+Upload a PDF and receive structured JSON.
+
+```bash
+curl -X POST "http://localhost:8000/resume/parse" \
+  -F "file=@/path/to/resume.pdf"
+```
+
+**Response** (excerpt):
+```json
+{
+  "full_name": "Hargurjeet Singh Ganger",
+  "email": "gurjeet333@gmail.com",
+  "current_job_title": "Senior Data Scientist",
+  "years_of_experience": 15,
+  "skills": [
+    { "name": "Python", "category": "technical", "proficiency": "expert" }
+  ],
+  "work_experience": [...],
+  "education": [...],
+  "projects": [...],
+  "certifications": [...],
+  "languages": ["English", "Hindi"]
+}
+```
+
+See `docs/api.md` for full reference and error codes.
+
+---
+
+## Environment Variables
+
+| Variable | Required | Default | Notes |
+|---|---|---|---|
+| `FIREWORKS_API_KEY` | Yes | — | Get one at [fireworks.ai](https://fireworks.ai) |
+| `FIREWORKS_MODEL_ID` | No | `accounts/fireworks/models/llama-v3p3-70b-instruct` | Override to swap model |
+| `FIREWORKS_BASE_URL` | No | `https://api.fireworks.ai/inference/v1` | Override for proxy |
+| `NEXT_PUBLIC_API_URL` | Yes (frontend) | — | Set in `frontend/.env.local` |
+
+---
+
+## Deployment
+
+### Current — Hugging Face Spaces (Streamlit + Docker)
+
+Every push to `main` triggers `.github/workflows/sync-to-hf.yml`, which uses
+`huggingface_hub.upload_folder()` to push to the HF Space. HF rebuilds the
+Docker image automatically.
+
+**Required secrets:**
+- GitHub: `HF_TOKEN` (Hugging Face write token)
+- HF Space: `FIREWORKS_API_KEY`
+
+### Planned — Vercel + Railway (Next.js)
+
+| Service | Platform | Config |
+|---|---|---|
+| Next.js frontend | Vercel (free) | Root dir: `frontend`, env: `NEXT_PUBLIC_API_URL` |
+| FastAPI backend | Railway (~$5/mo) | Uses existing Dockerfile, env: `FIREWORKS_API_KEY` |
+
+---
+
+## Troubleshooting
+
+| Error | Fix |
+|---|---|
+| `Connection refused` on port 8000 | Start uvicorn in a separate terminal |
+| `401 Unauthorized` | Check `FIREWORKS_API_KEY` in `.env` |
+| `Resume text is empty` | PDF is image-based (scanned); pdfplumber needs text-layer PDFs |
+| `AxiosError 403` on HF Spaces | Fixed — `COPY .streamlit ./.streamlit` in Dockerfile + XSRF flags in `start.sh` |
+| `Address already in use` | `lsof -ti:8000 \| xargs kill -9` |
+| Next.js PDF viewer crash | `pdfjs-dist` requires `ssr: false` dynamic import — already wired in `page.tsx` |
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE).
