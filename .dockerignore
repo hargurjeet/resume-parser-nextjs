@@ -1,0 +1,8 @@
+frontend/
+.git/
+.venv/
+docs/
+.env
+__pycache__/
+*.pyc
+*.pyo
