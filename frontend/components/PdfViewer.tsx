@@ -5,10 +5,8 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/Page/AnnotationLayer.css'
 import 'react-pdf/dist/Page/TextLayer.css'
 import { ChevronLeft, ChevronRight, FileX } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
-// Worker must be configured on the client before any Document is rendered.
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 interface Props {
@@ -21,11 +19,11 @@ export default function PdfViewer({ file, className }: Props) {
   const [page, setPage] = useState(1)
   const [containerWidth, setContainerWidth] = useState<number>(0)
   const [error, setError] = useState(false)
-  const containerRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLDivElement>(null)
 
-  // Track container width so the PDF fills its column
+  // Keep canvas width in sync with container size
   useEffect(() => {
-    const el = containerRef.current
+    const el = canvasRef.current
     if (!el) return
     const ro = new ResizeObserver(([entry]) => {
       setContainerWidth(entry.contentRect.width)
@@ -40,17 +38,41 @@ export default function PdfViewer({ file, className }: Props) {
     setError(false)
   }, [])
 
-  const onLoadError = useCallback(() => {
-    setError(true)
-  }, [])
+  const onLoadError = useCallback(() => setError(true), [])
 
   return (
-    <div className={cn('flex flex-col', className)}>
-      {/* PDF canvas */}
-      <div
-        ref={containerRef}
-        className="flex-1 overflow-y-auto rounded-2xl bg-[#F5F5F7] ring-1 ring-black/[0.06]"
-      >
+    <div className={cn('flex flex-col overflow-hidden rounded-2xl bg-[#F5F5F7] ring-1 ring-black/[0.06]', className)}>
+
+      {/* Navigation bar — always visible at top */}
+      <div className="flex shrink-0 items-center justify-between border-b border-black/[0.06] bg-white/70 px-4 py-2 backdrop-blur-sm">
+        <span className="text-xs font-medium text-muted-foreground truncate max-w-[60%]">
+          {file.name}
+        </span>
+        {numPages > 0 && (
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              disabled={page <= 1}
+              onClick={() => setPage((p) => p - 1)}
+              className="flex size-7 items-center justify-center rounded-lg border border-border bg-white text-foreground transition-colors hover:bg-[#F5F5F7] disabled:pointer-events-none disabled:opacity-40"
+            >
+              <ChevronLeft className="size-3.5" />
+            </button>
+            <span className="min-w-[5rem] text-center text-xs text-muted-foreground">
+              {page} / {numPages}
+            </span>
+            <button
+              disabled={page >= numPages}
+              onClick={() => setPage((p) => p + 1)}
+              className="flex size-7 items-center justify-center rounded-lg border border-border bg-white text-foreground transition-colors hover:bg-[#F5F5F7] disabled:pointer-events-none disabled:opacity-40"
+            >
+              <ChevronRight className="size-3.5" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Scrollable PDF canvas */}
+      <div ref={canvasRef} className="flex-1 overflow-y-auto">
         {error ? (
           <div className="flex h-64 flex-col items-center justify-center gap-2 text-muted-foreground">
             <FileX className="size-8" />
@@ -70,39 +92,15 @@ export default function PdfViewer({ file, className }: Props) {
           >
             <Page
               pageNumber={page}
-              width={containerWidth ? containerWidth - 32 : undefined}
+              width={containerWidth ? containerWidth - 24 : undefined}
               renderTextLayer
               renderAnnotationLayer
-              className="shadow-md rounded"
+              className="shadow-md"
             />
           </Document>
         )}
       </div>
 
-      {/* Page navigation */}
-      {numPages > 1 && (
-        <div className="mt-3 flex items-center justify-center gap-3">
-          <Button
-            variant="outline"
-            size="icon-sm"
-            disabled={page <= 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            <ChevronLeft className="size-4" />
-          </Button>
-          <span className="min-w-[6rem] text-center text-xs text-muted-foreground">
-            Page {page} of {numPages}
-          </span>
-          <Button
-            variant="outline"
-            size="icon-sm"
-            disabled={page >= numPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            <ChevronRight className="size-4" />
-          </Button>
-        </div>
-      )}
     </div>
   )
 }

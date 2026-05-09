@@ -103,9 +103,9 @@ function SplitView({ resume, file, onReset }: { resume: ParsedResume; file: File
   return (
     <div className="flex flex-1 overflow-hidden bg-[#F5F5F7]">
 
-      {/* Left — PDF viewer (40%) */}
+      {/* Left — PDF viewer (40%) — overflow-hidden so PdfViewer controls its own scroll */}
       <div className="hidden w-2/5 shrink-0 overflow-hidden p-4 lg:flex lg:flex-col">
-        <PdfViewer file={file} className="flex-1" />
+        <PdfViewer file={file} className="flex-1 min-h-0" />
       </div>
 
       <Separator orientation="vertical" className="hidden lg:block" />
