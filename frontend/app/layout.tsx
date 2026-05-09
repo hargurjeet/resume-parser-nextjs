@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "Resume Parser",
@@ -12,12 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased">
-      {/*
-        SF Pro is the system font on all Apple platforms.
-        On non-Apple devices this gracefully falls to Segoe UI / Helvetica Neue.
-        No font files to load — zero render-blocking.
-      */}
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
       <head>
         <style>{`
           :root {
@@ -26,7 +22,9 @@ export default function RootLayout({
           }
         `}</style>
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <ThemeProvider>{children}</ThemeProvider>
+      </body>
     </html>
   );
 }

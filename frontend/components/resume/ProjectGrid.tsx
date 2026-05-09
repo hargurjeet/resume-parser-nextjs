@@ -13,7 +13,7 @@ export default function ProjectGrid({ projects }: Props) {
       {projects.map((project, i) => (
         <div
           key={i}
-          className="flex gap-4 rounded-2xl border border-border bg-[#F5F5F7] px-5 py-4"
+          className="flex gap-4 rounded-2xl border border-border bg-[#F5F5F7] dark:bg-[#2C2C2E] px-5 py-4"
         >
           {/* Icon */}
           <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
@@ -45,7 +45,7 @@ export default function ProjectGrid({ projects }: Props) {
                 {project.technologies.map((tech) => (
                   <span
                     key={tech}
-                    className="inline-flex items-center rounded-full bg-white px-2.5 py-0.5 text-xs font-medium text-muted-foreground ring-1 ring-border"
+                    className="inline-flex items-center rounded-full bg-white dark:bg-[#3A3A3C] px-2.5 py-0.5 text-xs font-medium text-muted-foreground ring-1 ring-border"
                   >
                     {tech}
                   </span>

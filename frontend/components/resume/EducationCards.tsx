@@ -13,7 +13,7 @@ export default function EducationCards({ education }: Props) {
       {education.map((edu, i) => (
         <div
           key={i}
-          className="flex gap-4 rounded-2xl border border-border bg-[#F5F5F7] px-5 py-4"
+          className="flex gap-4 rounded-2xl border border-border bg-[#F5F5F7] dark:bg-[#2C2C2E] px-5 py-4"
         >
           {/* Icon */}
           <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
