@@ -1,43 +1,41 @@
 import { MapPin, Mail, Phone, ExternalLink, Globe, Briefcase } from 'lucide-react'
 import { ParsedResume } from '@/types/resume'
-import { cn } from '@/lib/utils'
 
 interface Props {
   resume: ParsedResume
-  /** Pass true when rendered on the dark gradient hero — forces white text */
-  inverted?: boolean
 }
 
-export default function CandidateHeader({ resume, inverted = false }: Props) {
-  const muted = inverted ? 'text-white/70' : 'text-muted-foreground'
-  const base = inverted ? 'text-white' : 'text-foreground'
-  const link = inverted
-    ? 'border-white/30 text-white/90 hover:bg-white/10'
-    : 'border-border text-foreground hover:bg-muted'
-  const badge = inverted
-    ? 'bg-white/20 text-white border-white/30'
-    : 'bg-secondary text-secondary-foreground border-transparent'
-
+export default function CandidateHeader({ resume }: Props) {
   return (
-    <div className="space-y-4">
-      {/* Name + role + badge */}
-      <div className="flex flex-wrap items-start gap-3">
-        <div className="flex-1 min-w-0">
-          <h2 className={cn('text-2xl font-bold tracking-tight', base)}>{resume.full_name}</h2>
+    <div className="space-y-5">
+      {/* Name + role — Apple large-type treatment */}
+      <div>
+        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+          {resume.full_name}
+        </h1>
+        <div className="mt-2 flex flex-wrap items-center gap-3">
           {resume.current_job_title && (
-            <p className={cn('mt-0.5 text-base', muted)}>{resume.current_job_title}</p>
+            <span className="text-lg font-medium text-primary">
+              {resume.current_job_title}
+            </span>
+          )}
+          {resume.years_of_experience != null && (
+            <>
+              <span className="text-muted-foreground">·</span>
+              <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+                <Briefcase className="size-3.5" />
+                {resume.years_of_experience} years of experience
+              </span>
+            </>
           )}
         </div>
-        {resume.years_of_experience != null && (
-          <span className={cn('inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-semibold shrink-0 mt-1', badge)}>
-            <Briefcase className="size-3" />
-            {resume.years_of_experience} yrs experience
-          </span>
-        )}
       </div>
 
-      {/* Contact row */}
-      <div className={cn('flex flex-wrap gap-x-4 gap-y-1.5 text-sm', muted)}>
+      {/* Divider */}
+      <div className="h-px bg-border" />
+
+      {/* Contact + links row */}
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
         {resume.location && (
           <span className="flex items-center gap-1.5">
             <MapPin className="size-3.5 shrink-0" />
@@ -45,7 +43,10 @@ export default function CandidateHeader({ resume, inverted = false }: Props) {
           </span>
         )}
         {resume.email && (
-          <a href={`mailto:${resume.email}`} className={cn('flex items-center gap-1.5 transition-opacity hover:opacity-80', muted)}>
+          <a
+            href={`mailto:${resume.email}`}
+            className="flex items-center gap-1.5 transition-colors hover:text-primary"
+          >
             <Mail className="size-3.5 shrink-0" />
             {resume.email}
           </a>
@@ -56,38 +57,50 @@ export default function CandidateHeader({ resume, inverted = false }: Props) {
             {resume.phone}
           </span>
         )}
-      </div>
 
-      {/* Profile links */}
-      {(resume.linkedin_url || resume.github_url || resume.portfolio_url) && (
-        <div className="flex flex-wrap gap-2">
-          {resume.linkedin_url && (
-            <a href={resume.linkedin_url} target="_blank" rel="noopener noreferrer"
-              className={cn('flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors', link)}>
-              <ExternalLink className="size-3.5" />
-              LinkedIn
-            </a>
-          )}
-          {resume.github_url && (
-            <a href={resume.github_url} target="_blank" rel="noopener noreferrer"
-              className={cn('flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors', link)}>
-              <ExternalLink className="size-3.5" />
-              GitHub
-            </a>
-          )}
-          {resume.portfolio_url && (
-            <a href={resume.portfolio_url} target="_blank" rel="noopener noreferrer"
-              className={cn('flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors', link)}>
-              <Globe className="size-3.5" />
-              Portfolio
-            </a>
-          )}
-        </div>
-      )}
+        {/* Profile links — Apple pill button style */}
+        {(resume.linkedin_url || resume.github_url || resume.portfolio_url) && (
+          <div className="flex flex-wrap gap-2 sm:ml-auto">
+            {resume.linkedin_url && (
+              <a
+                href={resume.linkedin_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-1.5 text-xs font-semibold text-white transition-opacity hover:opacity-85"
+              >
+                <ExternalLink className="size-3" />
+                LinkedIn
+              </a>
+            )}
+            {resume.github_url && (
+              <a
+                href={resume.github_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-[#F5F5F7] px-4 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+              >
+                <ExternalLink className="size-3" />
+                GitHub
+              </a>
+            )}
+            {resume.portfolio_url && (
+              <a
+                href={resume.portfolio_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-[#F5F5F7] px-4 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+              >
+                <Globe className="size-3" />
+                Portfolio
+              </a>
+            )}
+          </div>
+        )}
+      </div>
 
       {/* Summary */}
       {resume.summary && (
-        <p className={cn('text-sm leading-relaxed border-l-2 pl-3', inverted ? 'border-white/40 text-white/80' : 'border-primary/30 text-muted-foreground')}>
+        <p className="text-base leading-relaxed text-muted-foreground">
           {resume.summary}
         </p>
       )}

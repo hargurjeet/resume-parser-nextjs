@@ -350,28 +350,29 @@ npm run start   # test on :3000
 ## Files to Create
 
 ```
-frontend/
-├── src/
-│   ├── app/
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   └── globals.css
-│   ├── components/
-│   │   ├── ResumeUploader.tsx
-│   │   ├── PdfViewer.tsx
-│   │   └── resume/
-│   │       ├── CandidateHeader.tsx
-│   │       ├── SkillTags.tsx
-│   │       ├── ExperienceTimeline.tsx
-│   │       ├── EducationCards.tsx
-│   │       ├── ProjectGrid.tsx
-│   │       ├── CertificationList.tsx
-│   │       └── LanguageTags.tsx
-│   ├── lib/
-│   │   ├── api.ts
-│   │   └── mock.ts
-│   └── types/
-│       └── resume.ts
+frontend/          (no src/ — scaffolded with --no-src-dir)
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── globals.css
+├── components/
+│   ├── ResumeUploader.tsx       ✅
+│   ├── PdfViewer.tsx            🔄 Phase 5
+│   ├── resume/
+│   │   ├── CandidateHeader.tsx  ✅
+│   │   ├── SkillTags.tsx        ✅
+│   │   ├── ExperienceTimeline.tsx ✅
+│   │   ├── EducationCards.tsx   ✅
+│   │   ├── ProjectGrid.tsx      ✅
+│   │   ├── CertificationList.tsx ✅
+│   │   └── LanguageTags.tsx     ✅
+│   └── ui/                      ✅ (shadcn: badge, button, card, separator, skeleton, tabs)
+├── lib/
+│   ├── api.ts                   ✅
+│   ├── mock.ts                  ✅
+│   └── utils.ts                 ✅
+├── types/
+│   └── resume.ts                ✅
 ├── .env.local
 └── package.json
 ```

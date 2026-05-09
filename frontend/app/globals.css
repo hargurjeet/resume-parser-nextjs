@@ -49,38 +49,39 @@
 }
 
 :root {
-  --background: oklch(0.98 0.006 250);
-  --foreground: oklch(0.145 0 0);
+  /* Apple-inspired color palette */
+  --background: oklch(1 0 0);           /* pure white */
+  --foreground: oklch(0.13 0 0);        /* #1D1D1F Apple charcoal */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.13 0 0);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.52 0.22 262);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.95 0.012 250);
-  --secondary-foreground: oklch(0.25 0.05 262);
-  --muted: oklch(0.95 0.008 250);
-  --muted-foreground: oklch(0.50 0.02 250);
-  --accent: oklch(0.93 0.04 290);
-  --accent-foreground: oklch(0.25 0.08 280);
+  --popover-foreground: oklch(0.13 0 0);
+  --primary: oklch(0.60 0.20 250);      /* #007AFF Apple blue */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.97 0 0);         /* #F5F5F7 Apple light gray */
+  --secondary-foreground: oklch(0.13 0 0);
+  --muted: oklch(0.97 0 0);             /* #F5F5F7 */
+  --muted-foreground: oklch(0.50 0 0);  /* #6E6E73 Apple secondary text */
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.13 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.90 0.012 250);
-  --input: oklch(0.90 0.012 250);
-  --ring: oklch(0.52 0.22 262);
-  --chart-1: oklch(0.52 0.22 262);
-  --chart-2: oklch(0.60 0.18 290);
-  --chart-3: oklch(0.65 0.15 160);
-  --chart-4: oklch(0.68 0.16 55);
-  --chart-5: oklch(0.58 0.20 15);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.97 0.008 250);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.52 0.22 262);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.93 0.04 290);
-  --sidebar-accent-foreground: oklch(0.25 0.08 280);
-  --sidebar-border: oklch(0.90 0.012 250);
-  --sidebar-ring: oklch(0.52 0.22 262);
+  --border: oklch(0.91 0 0);            /* #E5E5EA Apple separator */
+  --input: oklch(0.91 0 0);
+  --ring: oklch(0.60 0.20 250);
+  --chart-1: oklch(0.60 0.20 250);
+  --chart-2: oklch(0.65 0.18 145);
+  --chart-3: oklch(0.62 0.18 30);
+  --chart-4: oklch(0.60 0.20 290);
+  --chart-5: oklch(0.58 0.22 15);
+  --radius: 0.75rem;                    /* 12px — Apple uses 12-16px */
+  --sidebar: oklch(0.97 0 0);
+  --sidebar-foreground: oklch(0.13 0 0);
+  --sidebar-primary: oklch(0.60 0.20 250);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.13 0 0);
+  --sidebar-border: oklch(0.91 0 0);
+  --sidebar-ring: oklch(0.60 0.20 250);
 }
 
 .dark {
