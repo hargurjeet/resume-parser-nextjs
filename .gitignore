@@ -1,0 +1,18 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+
+# Binary files (rejected by Hugging Face Spaces without LFS)
+*.pdf
