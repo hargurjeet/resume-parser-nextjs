@@ -153,23 +153,23 @@ function SplitView({ resume, file, onReset }: { resume: ParsedResume; file: File
             </div>
           )}
 
-          {/* Education + Projects */}
-          <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
-            {resume.education.length > 0 && (
-              <div className="rounded-3xl bg-white px-7 py-6 shadow-sm ring-1 ring-black/[0.06]">
-                <Section title="Education">
-                  <EducationCards education={resume.education} />
-                </Section>
-              </div>
-            )}
-            {resume.projects.length > 0 && (
-              <div className="rounded-3xl bg-white px-7 py-6 shadow-sm ring-1 ring-black/[0.06]">
-                <Section title="Projects">
-                  <ProjectGrid projects={resume.projects} />
-                </Section>
-              </div>
-            )}
-          </div>
+          {/* Education — full width horizontal cards */}
+          {resume.education.length > 0 && (
+            <div className="rounded-3xl bg-white px-7 py-6 shadow-sm ring-1 ring-black/[0.06]">
+              <Section title="Education">
+                <EducationCards education={resume.education} />
+              </Section>
+            </div>
+          )}
+
+          {/* Projects — full width horizontal cards */}
+          {resume.projects.length > 0 && (
+            <div className="rounded-3xl bg-white px-7 py-6 shadow-sm ring-1 ring-black/[0.06]">
+              <Section title="Projects">
+                <ProjectGrid projects={resume.projects} />
+              </Section>
+            </div>
+          )}
 
           {/* Actions */}
           <div className="flex flex-wrap items-center gap-3 pb-6">

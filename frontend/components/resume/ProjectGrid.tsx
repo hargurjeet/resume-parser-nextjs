@@ -1,5 +1,4 @@
-import { ExternalLink } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { ExternalLink, FolderOpen } from 'lucide-react'
 import { Project } from '@/types/resume'
 
 interface Props {
@@ -10,42 +9,51 @@ export default function ProjectGrid({ projects }: Props) {
   if (!projects.length) return null
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2">
+    <div className="space-y-3">
       {projects.map((project, i) => (
-        <Card key={i} size="sm">
-          <CardHeader>
+        <div
+          key={i}
+          className="flex gap-4 rounded-2xl border border-border bg-[#F5F5F7] px-5 py-4"
+        >
+          {/* Icon */}
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10">
+            <FolderOpen className="size-4 text-primary" />
+          </div>
+
+          {/* Details */}
+          <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">
-              <CardTitle className="leading-snug">{project.title}</CardTitle>
+              <p className="font-semibold leading-snug text-foreground">{project.title}</p>
               {project.url && (
                 <a
                   href={project.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="shrink-0 text-muted-foreground hover:text-foreground transition-colors"
+                  className="shrink-0 text-muted-foreground transition-colors hover:text-primary"
                 >
                   <ExternalLink className="size-3.5" />
                 </a>
               )}
             </div>
+
             {project.description && (
-              <CardDescription>{project.description}</CardDescription>
+              <p className="mt-0.5 text-sm text-muted-foreground">{project.description}</p>
             )}
-          </CardHeader>
-          {project.technologies.length > 0 && (
-            <CardContent>
-              <div className="flex flex-wrap gap-1.5">
+
+            {project.technologies.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
                 {project.technologies.map((tech) => (
                   <span
                     key={tech}
-                    className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
+                    className="inline-flex items-center rounded-full bg-white px-2.5 py-0.5 text-xs font-medium text-muted-foreground ring-1 ring-border"
                   >
                     {tech}
                   </span>
                 ))}
               </div>
-            </CardContent>
-          )}
-        </Card>
+            )}
+          </div>
+        </div>
       ))}
     </div>
   )
