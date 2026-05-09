@@ -35,7 +35,7 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
-## PHASE 1 — Foundation
+## PHASE 1 — Foundation ✅ COMPLETE
 
 *Goal: Next.js app boots with correct config. No UI yet.*
 
@@ -123,7 +123,7 @@ npm run build
 
 ---
 
-## PHASE 2 — API Integration
+## PHASE 2 — API Integration ✅ COMPLETE
 
 *Goal: Frontend can call the backend and receive a parsed resume.*
 
@@ -161,7 +161,7 @@ Expect a 400 error (PDF too short) — confirms CORS is open and the endpoint is
 
 ---
 
-## PHASE 3 — Upload Component
+## PHASE 3 — Upload Component ✅ COMPLETE
 
 *Goal: Drag-and-drop upload works and calls the API.*
 
@@ -184,7 +184,7 @@ Create `src/components/ResumeUploader.tsx`:
 
 ---
 
-## PHASE 4 — Display Components
+## PHASE 4 — Display Components 🔄 IN PROGRESS
 
 *Goal: Each resume section renders correctly using mock data. Build and test each component independently.*
 
