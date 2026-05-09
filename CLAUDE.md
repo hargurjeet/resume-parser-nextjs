@@ -6,7 +6,7 @@ A PDF resume parsing application. Users upload a PDF resume → text is extracte
 
 **Frontend status**: Streamlit UI exists and works (legacy). A Next.js frontend is being built in `frontend/` to replace it — see `docs/nextjs-plan.md` for the full 8-phase migration plan.
 
-**Next.js build progress**: Phase 1 (foundation) ✅ · Phase 2 (API client) ✅ · Phase 3 (upload component) ✅ · Phase 4 (display components) 🔄
+**Next.js build progress**: Phase 1 (foundation) ✅ · Phase 2 (API client) ✅ · Phase 3 (upload component) ✅ · Phase 4 (display components) ✅ · Phase 5 (PDF viewer) 🔄
 
 ## Stack
 

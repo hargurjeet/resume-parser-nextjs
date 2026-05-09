@@ -1,23 +1,57 @@
 'use client'
 
-import ResumeUploader from '@/components/ResumeUploader'
-import { ParsedResume } from '@/types/resume'
+import { MOCK_RESUME } from '@/lib/mock'
+import { Separator } from '@/components/ui/separator'
+import CandidateHeader from '@/components/resume/CandidateHeader'
+import SkillTags from '@/components/resume/SkillTags'
+import ExperienceTimeline from '@/components/resume/ExperienceTimeline'
+import EducationCards from '@/components/resume/EducationCards'
+import ProjectGrid from '@/components/resume/ProjectGrid'
+import CertificationList from '@/components/resume/CertificationList'
+import LanguageTags from '@/components/resume/LanguageTags'
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="space-y-3">
+      <div>
+        <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+          {title}
+        </h3>
+        <Separator className="mt-1.5" />
+      </div>
+      {children}
+    </section>
+  )
+}
 
 export default function Page() {
-  function handleSuccess(resume: ParsedResume, file: File) {
-    console.log('Parsed resume:', resume)
-    console.log('File:', file.name)
-  }
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight">Resume Parser</h1>
-        <p className="mt-2 text-muted-foreground">
-          Upload a PDF resume and get structured data in seconds
-        </p>
-      </div>
-      <ResumeUploader onSuccess={handleSuccess} />
+    <main className="mx-auto max-w-2xl space-y-8 p-8">
+      <CandidateHeader resume={MOCK_RESUME} />
+
+      <Section title="Skills">
+        <SkillTags skills={MOCK_RESUME.skills} />
+      </Section>
+
+      <Section title="Experience">
+        <ExperienceTimeline experience={MOCK_RESUME.work_experience} />
+      </Section>
+
+      <Section title="Education">
+        <EducationCards education={MOCK_RESUME.education} />
+      </Section>
+
+      <Section title="Projects">
+        <ProjectGrid projects={MOCK_RESUME.projects} />
+      </Section>
+
+      <Section title="Certifications">
+        <CertificationList certifications={MOCK_RESUME.certifications} />
+      </Section>
+
+      <Section title="Languages">
+        <LanguageTags languages={MOCK_RESUME.languages} />
+      </Section>
     </main>
   )
 }
