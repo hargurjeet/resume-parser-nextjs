@@ -20,7 +20,7 @@ license: mit
 
 An AI-powered PDF resume parsing application. Upload a PDF → text is extracted → **Llama 3.3 70B** on Fireworks AI parses it into structured JSON → results are displayed in a polished split-view UI showing the original PDF alongside the parsed data.
 
-**Live demo**: [Hugging Face Spaces](https://huggingface.co/spaces/Hargurjeet/Resume_parser) (Streamlit UI)
+**Live demo**: [hargurjeet-resume-ui.fly.dev](https://hargurjeet-resume-ui.fly.dev) (Next.js UI on Fly.io)
 
 ---
 
@@ -69,8 +69,8 @@ resume-parser-nextjs/
 │   ├── services/parser.py      # FireworksResumeParser — all AI logic
 │   ├── models/resume.py        # Pydantic schema (ParsedResume)
 │   └── core/config.py          # Settings via pydantic-settings
-├── streamlit_ui/ui.py          # Legacy Streamlit frontend (HF Spaces)
-├── frontend/                   # Next.js frontend (new)
+├── streamlit_ui/ui.py          # Legacy Streamlit frontend (HF Spaces only)
+├── frontend/                   # Next.js frontend
 │   ├── app/
 │   │   ├── layout.tsx          # ThemeProvider, SF Pro font, metadata
 │   │   ├── page.tsx            # Main split-view page
@@ -85,15 +85,13 @@ resume-parser-nextjs/
 │   ├── lib/
 │   │   ├── api.ts              # parseResume() fetch wrapper
 │   │   └── mock.ts             # Sample data for development
-│   └── types/resume.ts         # TypeScript interfaces (mirrors Pydantic models)
-├── docs/                       # Deep-dive documentation
-│   ├── architecture.md
-│   ├── api.md
-│   ├── data-models.md
-│   ├── setup.md
-│   └── nextjs-plan.md          # Full 8-phase Next.js migration plan
-├── Dockerfile                  # Python 3.10-slim, runs both services
-├── start.sh                    # Starts uvicorn + streamlit
+│   ├── types/resume.ts         # TypeScript interfaces (mirrors Pydantic models)
+│   ├── Dockerfile              # Multi-stage Node build for Fly.io
+│   └── fly.toml                # Frontend Fly.io config (hargurjeet-resume-ui)
+├── Dockerfile                  # HF Spaces — uvicorn + streamlit via uv
+├── Dockerfile.api              # Fly.io backend — uvicorn only, port 8080
+├── fly.toml                    # Backend Fly.io config (hargurjeet-resume-api)
+├── start.sh                    # Starts uvicorn + streamlit (HF Spaces)
 ├── pyproject.toml              # Python deps managed by uv
 └── .github/workflows/          # Auto-sync to HF Spaces on push to main
 ```
@@ -182,28 +180,43 @@ See `docs/api.md` for full reference and error codes.
 | `FIREWORKS_API_KEY` | Yes | — | Get one at [fireworks.ai](https://fireworks.ai) |
 | `FIREWORKS_MODEL_ID` | No | `accounts/fireworks/models/llama-v3p3-70b-instruct` | Override to swap model |
 | `FIREWORKS_BASE_URL` | No | `https://api.fireworks.ai/inference/v1` | Override for proxy |
-| `NEXT_PUBLIC_API_URL` | Yes (frontend) | — | Set in `frontend/.env.local` |
+| `NEXT_PUBLIC_API_URL` | Yes (frontend) | — | Set in `frontend/.env.local` for local dev; baked into the Fly.io build via `frontend/fly.toml` |
 
 ---
 
 ## Deployment
 
-### Current — Hugging Face Spaces (Streamlit + Docker)
+### Live — Fly.io (Next.js + FastAPI)
 
-Every push to `main` triggers `.github/workflows/sync-to-hf.yml`, which uses
-`huggingface_hub.upload_folder()` to push to the HF Space. HF rebuilds the
-Docker image automatically.
+Both services run on Fly.io in the Mumbai (`bom`) region.
 
-**Required secrets:**
+| Service | App name | URL |
+|---|---|---|
+| Next.js frontend | `hargurjeet-resume-ui` | https://hargurjeet-resume-ui.fly.dev |
+| FastAPI backend | `hargurjeet-resume-api` | https://hargurjeet-resume-api.fly.dev |
+
+To redeploy after changes:
+```bash
+# Backend (from project root)
+fly deploy --config fly.toml
+
+# Frontend (from frontend/ directory)
+fly deploy --config fly.toml
+```
+
+To update the API key:
+```bash
+fly secrets set FIREWORKS_API_KEY=your_key --app hargurjeet-resume-api
+```
+
+### Also live — Hugging Face Spaces (Streamlit)
+
+The legacy Streamlit UI remains running at [huggingface.co/spaces/Hargurjeet/Resume_parser](https://huggingface.co/spaces/Hargurjeet/Resume_parser).
+Every push to `main` triggers `.github/workflows/sync-to-hf.yml`, which syncs to the HF Space automatically.
+
+**Required secrets for HF Spaces:**
 - GitHub: `HF_TOKEN` (Hugging Face write token)
 - HF Space: `FIREWORKS_API_KEY`
-
-### Planned — Vercel + Railway (Next.js)
-
-| Service | Platform | Config |
-|---|---|---|
-| Next.js frontend | Vercel (free) | Root dir: `frontend`, env: `NEXT_PUBLIC_API_URL` |
-| FastAPI backend | Railway (~$5/mo) | Uses existing Dockerfile, env: `FIREWORKS_API_KEY` |
 
 ---
 
@@ -214,7 +227,6 @@ Docker image automatically.
 | `Connection refused` on port 8000 | Start uvicorn in a separate terminal |
 | `401 Unauthorized` | Check `FIREWORKS_API_KEY` in `.env` |
 | `Resume text is empty` | PDF is image-based (scanned); pdfplumber needs text-layer PDFs |
-| `AxiosError 403` on HF Spaces | Fixed — `COPY .streamlit ./.streamlit` in Dockerfile + XSRF flags in `start.sh` |
 | `Address already in use` | `lsof -ti:8000 \| xargs kill -9` |
 | Next.js PDF viewer crash | `pdfjs-dist` requires `ssr: false` dynamic import — already wired in `page.tsx` |
 
